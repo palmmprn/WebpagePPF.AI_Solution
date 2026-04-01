@@ -15,7 +15,7 @@
         /* ตั้งค่าฟอนต์ */
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
-            background-color: #050505; 
+            background-color: #000000; /* ดำสนิทแบบภาพเรฟเฟอเรนซ์ */
             color: #ffffff; 
             overflow-x: hidden;
         }
@@ -23,34 +23,54 @@
             font-family: 'Playfair Display', serif; 
         }
 
-        /* --- เอฟเฟกต์แสงออร่า (Massive Glow แบบ ArteDante) --- */
+        /* --- เอฟเฟกต์แสงออร่า 3 สี (Cyan, Blue, Purple) --- */
         .glow-container {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
             z-index: 0;
             overflow: hidden;
             pointer-events: none;
-            background-color: #050505; /* พื้นหลังสีดำสนิท */
+            background-color: #000000;
         }
         
-        .main-glow {
+        /* แสงสีฟ้าสว่าง (ขอบซ้าย) */
+        .glow-cyan {
             position: absolute;
-            top: -40%; left: 50%;
-            transform: translateX(-50%);
-            width: 150vw; 
-            height: 120vh;
-            /* ไล่สีส้มเข้มตรงกลาง ไปส้มอ่อน และกลืนกับสีดำ */
-            background: radial-gradient(ellipse at center, rgba(255, 70, 0, 0.5) 0%, rgba(255, 100, 0, 0.25) 35%, rgba(5,5,5,0) 70%);
-            border-radius: 50%;
-            filter: blur(80px);
-            animation: breathe 8s ease-in-out infinite alternate;
+            top: 10%; left: -15%;
+            width: 60vw; height: 120vh;
+            background: radial-gradient(ellipse at center left, #00e2ff 0%, transparent 60%);
+            filter: blur(100px);
+            animation: breathe-cyan 8s ease-in-out infinite alternate;
+            opacity: 0.5;
         }
 
-        /* อนิเมชั่นให้แสงขยับหายใจเบาๆ */
-        @keyframes breathe {
-            0% { transform: translateX(-50%) scale(1); opacity: 0.85; }
-            100% { transform: translateX(-50%) scale(1.05); opacity: 1; }
+        /* แสงสีน้ำเงินลึก (กลางซ้าย) */
+        .glow-blue {
+            position: absolute;
+            top: 0%; left: -10%;
+            width: 80vw; height: 120vh;
+            background: radial-gradient(ellipse at center left, #0700c5 0%, transparent 65%);
+            filter: blur(120px);
+            animation: breathe-blue 10s ease-in-out infinite alternate-reverse;
+            opacity: 0.8;
         }
+
+        /* แสงสีม่วง (กลางจอค่อนไปทางซ้าย) */
+        .glow-purple {
+            position: absolute;
+            top: -10%; left: 10%;
+            width: 70vw; height: 100vh;
+            background: radial-gradient(ellipse at center, #25005e 0%, transparent 60%);
+            filter: blur(130px);
+            animation: breathe-purple 12s ease-in-out infinite alternate;
+            opacity: 0.7;
+        }
+
+        /* อนิเมชันการหายใจของแต่ละสี (ขยับนิดๆ ให้ดูมีชีวิต) */
+        @keyframes breathe-cyan { 0% { transform: scale(1) translate(0, 0); opacity: 0.4; } 100% { transform: scale(1.1) translate(20px, 30px); opacity: 0.6; } }
+        @keyframes breathe-blue { 0% { transform: scale(1) translate(0, 0); opacity: 0.7; } 100% { transform: scale(1.05) translate(-30px, 10px); opacity: 0.9; } }
+        @keyframes breathe-purple { 0% { transform: scale(1) translate(0, 0); opacity: 0.6; } 100% { transform: scale(1.1) translate(10px, -20px); opacity: 0.8; } }
+
 
         /* อนิเมชั่นสำหรับปุ่ม Scroll Down */
         @keyframes bounce-slow {
@@ -84,23 +104,25 @@
 
         /* เมนูตอนเลื่อนจอลงมา */
         .scrolled-nav {
-            background-color: rgba(5, 5, 5, 0.8) !important;
+            background-color: rgba(0, 0, 0, 0.8) !important;
             backdrop-filter: blur(12px);
-            border-bottom-color: rgba(255,255,255,0.1) !important;
+            border-bottom-color: rgba(255,255,255,0.05) !important;
         }
     </style>
 </head>
-<body class="min-h-screen selection:bg-orange-500 selection:text-white relative">
+<body class="min-h-screen selection:bg-cyan-500 selection:text-white relative">
 
     <!-- เอฟเฟกต์เม็ดน้อยส์ฟิล์ม -->
     <div class="noise-overlay"></div>
 
-    <!-- กล่องรวมแสงออร่าพื้นหลัง -->
+    <!-- กล่องรวมแสงออร่า 3 สี (ขยับตามเมาส์ได้ด้วย JS) -->
     <div class="glow-container">
-        <div class="main-glow" id="interactive-glow"></div>
+        <div class="glow-blue" id="interactive-glow-1"></div>
+        <div class="glow-purple" id="interactive-glow-2"></div>
+        <div class="glow-cyan" id="interactive-glow-3"></div>
     </div>
 
-    <!-- แถบเมนูบนสุด (Ultra-Minimalist แบบ ArteDante) -->
+    <!-- แถบเมนูบนสุด -->
     <nav id="navbar" class="fixed w-full z-50 transition-all duration-500 pt-8 pb-4">
         <div class="container mx-auto px-6 lg:px-12">
             <!-- เส้นคั่นบางๆ และข้อความเล็กๆ ซ้ายขวา -->
@@ -109,14 +131,14 @@
                 <!-- ฝั่งซ้าย -->
                 <div class="flex items-center gap-4">
                     <span class="hidden md:inline">ACADEMIC & IT SOLUTIONS PPF</span>
-                    <span class="md:hidden">PPF SOLUTIONS</span> <!-- ย่อคำในมือถือ -->
+                    <span class="md:hidden">PPF SOLUTIONS</span>
                 </div>
                 
                 <!-- ฝั่งขวา (รวมปี และปุ่มเมนู) -->
                 <div class="flex items-center gap-6">
                     <span>2024</span>
                     <!-- Mobile Menu Toggle -->
-                    <button id="mobile-menu-btn" class="focus:outline-none hover:text-orange-500 transition-colors">
+                    <button id="mobile-menu-btn" class="focus:outline-none hover:text-cyan-400 transition-colors">
                         <i data-lucide="menu" id="menu-icon" class="w-4 h-4"></i>
                         <i data-lucide="x" id="close-icon" class="w-4 h-4 hidden"></i>
                     </button>
@@ -125,49 +147,45 @@
             </div>
         </div>
 
-        <!-- Mobile/Full Menu Dropdown (ซ่อนอยู่ จะแสดงเมื่อกดแฮมเบอร์เกอร์) -->
-        <div id="mobile-menu" class="hidden absolute top-full left-0 w-full bg-[#050505]/95 backdrop-blur-xl border-b border-white/10 flex-col p-8 gap-6 font-heading text-2xl z-40 text-center">
+        <!-- Mobile/Full Menu Dropdown -->
+        <div id="mobile-menu" class="hidden absolute top-full left-0 w-full bg-[#000000]/95 backdrop-blur-xl border-b border-white/10 flex-col p-8 gap-6 font-heading text-2xl z-40 text-center">
             <a href="#home" class="mobile-link text-white/70 hover:text-white transition-colors">Home.</a>
             <a href="#about" class="mobile-link text-white/70 hover:text-white transition-colors">About.</a>
             <a href="#services" class="mobile-link text-white/70 hover:text-white transition-colors">Services.</a>
             <a href="#works" class="mobile-link text-white/70 hover:text-white transition-colors">Works.</a>
             <a href="#team" class="mobile-link text-white/70 hover:text-white transition-colors">Team.</a>
             <a href="#pricing" class="mobile-link text-white/70 hover:text-white transition-colors">Pricing.</a>
-            <a href="https://line.me/R/ti/p/@368waguc" target="_blank" class="mobile-link text-orange-500 transition-colors mt-4">Let's Talk →</a>
+            <a href="https://line.me/R/ti/p/@368waguc" target="_blank" class="mobile-link text-cyan-400 transition-colors mt-4">Let's Talk →</a>
         </div>
     </nav>
 
-    <!-- Hero Section (Centered Ultra-Minimalist) -->
+    <!-- Hero Section -->
     <section id="home" class="relative min-h-screen flex flex-col items-center justify-center text-center">
         <div class="container mx-auto px-6 relative z-10 flex flex-col items-center mt-10">
             
-            <!-- ตัวอักษรใหญ่ยักษ์ตรงกลาง เปลี่ยนเป็น font-normal เพื่อความแพง -->
             <h1 class="text-6xl md:text-8xl lg:text-[10rem] font-heading font-normal leading-none tracking-tight text-white drop-shadow-2xl mb-4">
                 PPF.AI
             </h1>
             
-            <!-- Subtitle เล็กๆ บางๆ ไม่รก แต่ดูแพง (สามารถแก้ข้อความได้) -->
             <p class="text-white/40 text-[11px] md:text-sm tracking-[0.3em] uppercase font-light max-w-lg">
                 Premium Academic & IT Solutions
             </p>
             
         </div>
 
-        <!-- เพิ่มฟีเจอร์ใหม่: Scroll Indicator บอกให้คนรู้ว่ามีเนื้อหาข้างล่าง -->
-        <a href="#about" class="absolute bottom-12 left-1/2 transform -translate-x-1/2 flex flex-col items-center opacity-60 hover:opacity-100 transition-opacity animate-bounce-slow cursor-pointer z-20">
-            <span class="text-[9px] md:text-[10px] tracking-[0.3em] uppercase mb-3 font-light text-white/70">Scroll Explore</span>
-            <div class="w-[1px] h-12 bg-gradient-to-b from-white/70 to-transparent"></div>
+        <!-- Scroll Indicator -->
+        <a href="#about" class="absolute bottom-12 left-1/2 transform -translate-x-1/2 flex flex-col items-center opacity-60 hover:opacity-100 transition-opacity animate-bounce-slow cursor-pointer z-20 hover:text-cyan-400">
+            <span class="text-[9px] md:text-[10px] tracking-[0.3em] uppercase mb-3 font-light text-current">Scroll Explore</span>
+            <div class="w-[1px] h-12 bg-gradient-to-b from-current to-transparent"></div>
         </a>
     </section>
 
-    <!-- About Section (New - สร้างใหม่ให้อิงจากเรฟเฟอเรนซ์รูปภาพ) -->
+    <!-- About Section -->
     <section id="about" class="py-32 relative z-10">
         <div class="container mx-auto px-6 lg:px-12">
             <div class="flex flex-col items-center text-center reveal">
-                <!-- หัวข้อ About ฟอนต์มีหัวสวยๆ -->
                 <h2 class="text-6xl md:text-[8rem] font-heading font-normal mb-16 tracking-wide text-white">About</h2>
                 
-                <!-- ข้อความอธิบายแบบมินิมอล -->
                 <div class="max-w-lg text-center md:text-left text-white/50 text-[13px] md:text-sm font-light leading-loose space-y-6 md:pl-[20%]">
                     <p>
                         We are a young PPF.AI team. We create high-quality and visually attractive digital products and academic solutions that help you achieve your goals.
@@ -180,7 +198,7 @@
         </div>
     </section>
 
-    <!-- Services Section (ปรับ Layout ใหม่ให้เหมือนเรฟเป๊ะๆ แบ่งคอลัมน์) -->
+    <!-- Services Section -->
     <section id="services" class="py-32 relative z-10">
         <div class="container mx-auto px-6 lg:px-32">
             <div class="flex flex-col lg:flex-row justify-between gap-16 lg:gap-32 reveal">
@@ -197,10 +215,10 @@
                     <div>
                         <h3 class="text-sm font-semibold text-white/90 mb-8 tracking-wider">Development</h3>
                         <ul class="space-y-5 text-[13px] text-white/40 font-light">
-                            <li class="hover:text-white/90 transition-colors cursor-pointer">Web & App Development</li>
-                            <li class="hover:text-white/90 transition-colors cursor-pointer">Back - end System</li>
-                            <li class="hover:text-white/90 transition-colors cursor-pointer">Database Design</li>
-                            <li class="hover:text-white/90 transition-colors cursor-pointer">Application Software</li>
+                            <li class="hover:text-cyan-400 transition-colors cursor-pointer">Web & App Development</li>
+                            <li class="hover:text-cyan-400 transition-colors cursor-pointer">Back - end System</li>
+                            <li class="hover:text-cyan-400 transition-colors cursor-pointer">Database Design</li>
+                            <li class="hover:text-cyan-400 transition-colors cursor-pointer">Application Software</li>
                         </ul>
                     </div>
 
@@ -208,10 +226,10 @@
                     <div>
                         <h3 class="text-sm font-semibold text-white/90 mb-8 tracking-wider">Academic & Tasks</h3>
                         <ul class="space-y-5 text-[13px] text-white/40 font-light">
-                            <li class="hover:text-white/90 transition-colors cursor-pointer">Classroom Assignments</li>
-                            <li class="hover:text-white/90 transition-colors cursor-pointer">Research & Documentation</li>
-                            <li class="hover:text-white/90 transition-colors cursor-pointer">General Task Management</li>
-                            <li class="hover:text-white/90 transition-colors cursor-pointer">Data Analysis</li>
+                            <li class="hover:text-cyan-400 transition-colors cursor-pointer">Classroom Assignments</li>
+                            <li class="hover:text-cyan-400 transition-colors cursor-pointer">Research & Documentation</li>
+                            <li class="hover:text-cyan-400 transition-colors cursor-pointer">General Task Management</li>
+                            <li class="hover:text-cyan-400 transition-colors cursor-pointer">Data Analysis</li>
                         </ul>
                     </div>
 
@@ -220,169 +238,165 @@
         </div>
     </section>
 
-    <!-- Impact & Stats Section (สถิติความน่าเชื่อถือ สไตล์ Orange) -->
+    <!-- Impact & Stats Section -->
     <section class="py-20 relative z-10 border-t border-white/5 bg-white/[0.01]">
         <div class="container mx-auto px-6 lg:px-32">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-10 text-center reveal">
                 <div class="flex flex-col items-center">
-                    <span class="text-4xl md:text-5xl font-heading text-white mb-2">50<span class="text-orange-500">+</span></span>
+                    <span class="text-4xl md:text-5xl font-heading text-white mb-2">50<span class="text-cyan-400">+</span></span>
                     <span class="text-[10px] md:text-xs text-white/40 uppercase tracking-widest">Projects Done</span>
                 </div>
                 <div class="flex flex-col items-center">
-                    <span class="text-4xl md:text-5xl font-heading text-white mb-2">100<span class="text-orange-500">%</span></span>
+                    <span class="text-4xl md:text-5xl font-heading text-white mb-2">100<span class="text-cyan-400">%</span></span>
                     <span class="text-[10px] md:text-xs text-white/40 uppercase tracking-widest">Satisfaction</span>
                 </div>
                 <div class="flex flex-col items-center">
-                    <span class="text-4xl md:text-5xl font-heading text-white mb-2">24<span class="text-orange-500">/7</span></span>
+                    <span class="text-4xl md:text-5xl font-heading text-white mb-2">24<span class="text-cyan-400">/7</span></span>
                     <span class="text-[10px] md:text-xs text-white/40 uppercase tracking-widest">Support</span>
                 </div>
                 <div class="flex flex-col items-center">
-                    <span class="text-4xl md:text-5xl font-heading text-white mb-2">A<span class="text-orange-500">+</span></span>
+                    <span class="text-4xl md:text-5xl font-heading text-white mb-2">A<span class="text-cyan-400">+</span></span>
                     <span class="text-[10px] md:text-xs text-white/40 uppercase tracking-widest">Average Grade</span>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Selected Works / Portfolio (ผลงานที่ผ่านมา) -->
+    <!-- Selected Works / Portfolio -->
     <section id="works" class="py-32 relative z-10 border-t border-white/5">
         <div class="container mx-auto px-6 lg:px-12">
             <div class="flex flex-col md:flex-row justify-between items-end mb-20 reveal">
                 <h2 class="text-5xl md:text-6xl font-heading font-normal tracking-wide text-white">Selected Works</h2>
-                <a href="#contact" class="hidden md:flex items-center gap-2 text-sm text-orange-400 hover:text-orange-300 transition-colors">
+                <a href="#contact" class="hidden md:flex items-center gap-2 text-sm text-cyan-400 hover:text-cyan-300 transition-colors">
                     View all projects <i data-lucide="arrow-right" class="w-4 h-4"></i>
                 </a>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
                 
-                <!-- Work 01: งานพัฒนาระบบ (IT Solution) -->
+                <!-- Work 01 -->
                 <div class="group cursor-pointer reveal">
-                    <div class="w-full aspect-[4/3] bg-white/5 rounded-sm overflow-hidden mb-6 relative border border-white/5 group-hover:border-white/20 transition-all duration-500">
+                    <div class="w-full aspect-[4/3] bg-white/5 rounded-sm overflow-hidden mb-6 relative border border-white/5 group-hover:border-cyan-500/30 transition-all duration-500">
                         <img src="images/work/work01.png" alt="งานพัฒนาระบบ" class="w-full h-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/20 to-transparent opacity-80"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#000000] via-[#000000]/20 to-transparent opacity-80 group-hover:opacity-50 transition-opacity"></div>
                     </div>
                     <div class="flex justify-between items-start">
                         <div>
-                            <h3 class="text-xl font-heading text-white mb-2">System Development</h3>
+                            <h3 class="text-xl font-heading text-white mb-2 group-hover:text-cyan-300 transition-colors">System Development</h3>
                             <p class="text-xs text-white/40 tracking-wider">งานพัฒนาระบบและเขียนโปรแกรม</p>
                         </div>
-                        <i data-lucide="arrow-up-right" class="w-5 h-5 text-white/30 group-hover:text-orange-500 transition-colors"></i>
+                        <i data-lucide="arrow-up-right" class="w-5 h-5 text-white/30 group-hover:text-cyan-400 transition-colors"></i>
                     </div>
                 </div>
 
-                <!-- Work 02: งานเอกสารวิชาการ / งานวิจัย (Academic Solution) -->
+                <!-- Work 02 -->
                 <div class="group cursor-pointer md:mt-16 reveal">
-                    <div class="w-full aspect-[4/3] bg-white/5 rounded-sm overflow-hidden mb-6 relative border border-white/5 group-hover:border-white/20 transition-all duration-500">
+                    <div class="w-full aspect-[4/3] bg-white/5 rounded-sm overflow-hidden mb-6 relative border border-white/5 group-hover:border-cyan-500/30 transition-all duration-500">
                         <img src="images/work/work02.png" alt="งานเอกสารวิชาการ" class="w-full h-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/20 to-transparent opacity-80"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#000000] via-[#000000]/20 to-transparent opacity-80 group-hover:opacity-50 transition-opacity"></div>
                     </div>
                     <div class="flex justify-between items-start">
                         <div>
-                            <h3 class="text-xl font-heading text-white mb-2">Academic Research</h3>
+                            <h3 class="text-xl font-heading text-white mb-2 group-hover:text-cyan-300 transition-colors">Academic Research</h3>
                             <p class="text-xs text-white/40 tracking-wider">บริการจัดทำรายงานและงานวิจัยวิชาการ</p>
                         </div>
-                        <i data-lucide="arrow-up-right" class="w-5 h-5 text-white/30 group-hover:text-orange-500 transition-colors"></i>
+                        <i data-lucide="arrow-up-right" class="w-5 h-5 text-white/30 group-hover:text-cyan-400 transition-colors"></i>
                     </div>
                 </div>
 
-                <!-- Work 03: สไลด์พรีเซนต์ / วิเคราะห์ข้อมูล (General Tasks) -->
+                <!-- Work 03 -->
                 <div class="group cursor-pointer reveal">
-                    <div class="w-full aspect-[4/3] bg-white/5 rounded-sm overflow-hidden mb-6 relative border border-white/5 group-hover:border-white/20 transition-all duration-500">
+                    <div class="w-full aspect-[4/3] bg-white/5 rounded-sm overflow-hidden mb-6 relative border border-white/5 group-hover:border-cyan-500/30 transition-all duration-500">
                         <img src="images/work/work03.png" alt="พรีเซนเทชันและข้อมูล" class="w-full h-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/20 to-transparent opacity-80"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#000000] via-[#000000]/20 to-transparent opacity-80 group-hover:opacity-50 transition-opacity"></div>
                     </div>
                     <div class="flex justify-between items-start">
                         <div>
-                            <h3 class="text-xl font-heading text-white mb-2">Presentation & Analysis</h3>
+                            <h3 class="text-xl font-heading text-white mb-2 group-hover:text-cyan-300 transition-colors">Presentation & Analysis</h3>
                             <p class="text-xs text-white/40 tracking-wider">ออกแบบสไลด์พรีเซนต์และวิเคราะห์ข้อมูล</p>
                         </div>
-                        <i data-lucide="arrow-up-right" class="w-5 h-5 text-white/30 group-hover:text-orange-500 transition-colors"></i>
+                        <i data-lucide="arrow-up-right" class="w-5 h-5 text-white/30 group-hover:text-cyan-400 transition-colors"></i>
                     </div>
                 </div>
 
-                <!-- Work 04: โปรเจกต์รายวิชา / การบ้าน (Class Assignments) -->
+                <!-- Work 04 -->
                 <div class="group cursor-pointer md:mt-16 reveal">
-                    <div class="w-full aspect-[4/3] bg-white/5 rounded-sm overflow-hidden mb-6 relative border border-white/5 group-hover:border-white/20 transition-all duration-500">
+                    <div class="w-full aspect-[4/3] bg-white/5 rounded-sm overflow-hidden mb-6 relative border border-white/5 group-hover:border-cyan-500/30 transition-all duration-500">
                         <img src="images/work/work04.png" alt="โปรเจกต์รายวิชา" class="w-full h-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/20 to-transparent opacity-80"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#000000] via-[#000000]/20 to-transparent opacity-80 group-hover:opacity-50 transition-opacity"></div>
                     </div>
                     <div class="flex justify-between items-start">
                         <div>
-                            <h3 class="text-xl font-heading text-white mb-2">Class Project Solutions</h3>
+                            <h3 class="text-xl font-heading text-white mb-2 group-hover:text-cyan-300 transition-colors">Class Project Solutions</h3>
                             <p class="text-xs text-white/40 tracking-wider">รับจบโปรเจกต์รายวิชาตาม Requirement</p>
                         </div>
-                        <i data-lucide="arrow-up-right" class="w-5 h-5 text-white/30 group-hover:text-orange-500 transition-colors"></i>
+                        <i data-lucide="arrow-up-right" class="w-5 h-5 text-white/30 group-hover:text-cyan-400 transition-colors"></i>
                     </div>
                 </div>
 
-                <!-- Work 05: หน้าเว็บเพจองค์กร (Highlight) - ขยายเต็ม 2 คอลัมน์ -->
+                <!-- Work 05: ขยายเต็ม 2 คอลัมน์ -->
                 <div class="group cursor-pointer md:col-span-2 reveal">
-                    <div class="w-full aspect-[4/3] md:aspect-[21/9] bg-white/5 rounded-sm overflow-hidden mb-6 relative border border-white/5 group-hover:border-white/20 transition-all duration-500">
+                    <div class="w-full aspect-[4/3] md:aspect-[21/9] bg-white/5 rounded-sm overflow-hidden mb-6 relative border border-white/5 group-hover:border-cyan-500/30 transition-all duration-500">
                         <img src="images/work/work05.png" alt="งานพัฒนาหน้าเว็บเพจองค์กร" class="w-full h-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/20 to-transparent opacity-80"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#000000] via-[#000000]/20 to-transparent opacity-80 group-hover:opacity-50 transition-opacity"></div>
                     </div>
                     <div class="flex justify-between items-start">
                         <div>
-                            <h3 class="text-xl md:text-2xl font-heading text-white mb-2">Corporate Webpage Design</h3>
+                            <h3 class="text-xl md:text-2xl font-heading text-white mb-2 group-hover:text-cyan-300 transition-colors">Corporate Webpage Design</h3>
                             <p class="text-xs text-white/40 tracking-wider">งานออกแบบและพัฒนาเว็บไซต์สำหรับองค์กร (Web Development)</p>
                         </div>
-                        <i data-lucide="arrow-up-right" class="w-5 h-5 text-white/30 group-hover:text-orange-500 transition-colors"></i>
+                        <i data-lucide="arrow-up-right" class="w-5 h-5 text-white/30 group-hover:text-cyan-400 transition-colors"></i>
                     </div>
                 </div>
 
             </div>
             
-            <a href="#contact" class="flex md:hidden items-center justify-center gap-2 text-sm text-orange-400 mt-12 hover:text-orange-300 transition-colors">
+            <a href="#contact" class="flex md:hidden items-center justify-center gap-2 text-sm text-cyan-400 mt-12 hover:text-cyan-300 transition-colors">
                 View all projects <i data-lucide="arrow-right" class="w-4 h-4"></i>
             </a>
         </div>
     </section>
 
-    <!-- Pricing Section (แพ็กเกจราคา) -->
+    <!-- Pricing Section -->
     <section id="pricing" class="py-32 relative z-10 border-t border-white/5">
         <div class="container mx-auto px-6 lg:px-32 reveal">
             <div class="flex flex-col items-center text-center mb-24">
                 <h2 class="text-5xl md:text-6xl font-heading font-normal tracking-wide text-white mb-8">Investment</h2>
-                <!-- เกลาคำพูดใหม่ให้ดูแพงและเป็นมืออาชีพ -->
                 <p class="text-white/50 text-[13px] md:text-sm font-light leading-loose max-w-2xl">
                     ค่าบริการของเราถูกประเมินอย่างเป็นธรรมตามความซับซ้อนและขอบเขตของ Requirement <br class="hidden md:block">
                     เพื่อให้คุณได้รับผลลัพธ์ที่คุ้มค่าที่สุด การันตีคุณภาพงานส่งตรงเวลา <br>
-                    <span class="text-orange-400 font-medium mt-4 inline-block">เริ่มต้นเพียง 200 - 2,000+ บาท</span>
+                    <span class="text-cyan-400 font-medium mt-4 inline-block">เริ่มต้นเพียง 200 - 2,000+ บาท</span>
                 </p>
             </div>
 
             <!-- ตารางราคาแบบ Minimal -->
             <div class="max-w-4xl mx-auto flex flex-col w-full">
-                <!-- งานพัฒนาระบบ -->
-                <div class="group flex justify-between items-center py-8 border-b border-white/10 hover:border-orange-500/50 transition-colors">
+                <div class="group flex justify-between items-center py-8 border-b border-white/10 hover:border-cyan-500/50 transition-colors">
                     <div class="flex flex-col md:flex-row md:items-center gap-2 md:gap-8">
                         <h3 class="text-lg md:text-xl font-heading text-white">System Development</h3>
                         <span class="text-[11px] text-white/30 uppercase tracking-widest">งานพัฒนาระบบ</span>
                     </div>
-                    <div class="text-orange-400 font-light text-lg md:text-xl">
+                    <div class="text-cyan-400 font-light text-lg md:text-xl">
                         ฿500 - ฿2,000<span class="text-xs text-white/40 ml-1">+</span>
                     </div>
                 </div>
 
-                <!-- งานตามคลาสรูม -->
-                <div class="group flex justify-between items-center py-8 border-b border-white/10 hover:border-orange-500/50 transition-colors">
+                <div class="group flex justify-between items-center py-8 border-b border-white/10 hover:border-cyan-500/50 transition-colors">
                     <div class="flex flex-col md:flex-row md:items-center gap-2 md:gap-8">
                         <h3 class="text-lg md:text-xl font-heading text-white">Academic Solutions</h3>
                         <span class="text-[11px] text-white/30 uppercase tracking-widest">งานวิชาการ / งานในคลาส</span>
                     </div>
-                    <div class="text-orange-400 font-light text-lg md:text-xl">
+                    <div class="text-cyan-400 font-light text-lg md:text-xl">
                         ฿200 - ฿1,000
                     </div>
                 </div>
 
-                <!-- งานจิปาถะ -->
-                <div class="group flex justify-between items-center py-8 border-b border-white/10 hover:border-orange-500/50 transition-colors">
+                <div class="group flex justify-between items-center py-8 border-b border-white/10 hover:border-cyan-500/50 transition-colors">
                     <div class="flex flex-col md:flex-row md:items-center gap-2 md:gap-8">
                         <h3 class="text-lg md:text-xl font-heading text-white">General Tasks</h3>
                         <span class="text-[11px] text-white/30 uppercase tracking-widest">งานจิปาถะทั่วไป</span>
                     </div>
-                    <div class="text-orange-400 font-light text-lg md:text-xl">
+                    <div class="text-cyan-400 font-light text-lg md:text-xl">
                         ฿200 - ฿500
                     </div>
                 </div>
@@ -390,8 +404,8 @@
         </div>
     </section>
 
-    <!-- Founders / Team Section (ข้อมูล 3 คน) -->
-    <section id="team" class="py-32 relative z-10 bg-gradient-to-b from-[#050505] to-[#0a0a0a]">
+    <!-- Founders / Team Section -->
+    <section id="team" class="py-32 relative z-10 bg-gradient-to-b from-[#000000] to-[#050508]">
         <div class="container mx-auto px-6 lg:px-20 reveal">
             <h2 class="text-5xl md:text-6xl font-heading font-normal tracking-wide text-white mb-20 text-center">Founders</h2>
             
@@ -400,17 +414,16 @@
                 <!-- คุณพุค -->
                 <div class="group flex flex-col items-center text-center">
                     <div class="w-full aspect-[3/4] overflow-hidden mb-8 rounded-sm bg-white/5 relative">
-                        <!-- เอฟเฟกต์ขาวดำ และค่อยๆ เปลี่ยนเป็นสีตอน Hover -->
                         <img src="images/pook.png" alt="Ronnakorn Ridsri" class="w-full h-full object-cover object-center grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700 ease-in-out scale-100 group-hover:scale-105">
-                        <div class="absolute inset-0 border border-white/10 group-hover:border-orange-500/50 transition-colors duration-500 pointer-events-none"></div>
+                        <div class="absolute inset-0 border border-white/10 group-hover:border-cyan-500/50 transition-colors duration-500 pointer-events-none"></div>
                     </div>
                     <h3 class="text-2xl font-heading text-white mb-1">Ronnakorn Ridsri</h3>
-                    <p class="text-[11px] uppercase tracking-[0.2em] text-white/40 mb-6">นายรณกร ฤทธิ์ศรี (พุค)</p>
+                    <p class="text-[11px] uppercase tracking-[0.2em] text-cyan-400/80 mb-6">นายรณกร ฤทธิ์ศรี (พุค)</p>
                     
                     <div class="text-xs text-white/50 font-light space-y-2 flex flex-col items-center">
-                        <a href="tel:0645708152" class="hover:text-orange-400 transition-colors flex items-center gap-2"><i data-lucide="phone" class="w-3 h-3"></i> 064-570-8152</a>
-                        <a href="mailto:zapook12@gmail.com" class="hover:text-orange-400 transition-colors flex items-center gap-2"><i data-lucide="mail" class="w-3 h-3"></i> zapook12@gmail.com</a>
-                        <span class="flex items-center gap-2"><i data-lucide="message-circle" class="w-3 h-3 text-green-500 opacity-70"></i> LINE ID: tikizz</span>
+                        <a href="tel:0645708152" class="hover:text-cyan-400 transition-colors flex items-center gap-2"><i data-lucide="phone" class="w-3 h-3"></i> 064-570-8152</a>
+                        <a href="mailto:zapook12@gmail.com" class="hover:text-cyan-400 transition-colors flex items-center gap-2"><i data-lucide="mail" class="w-3 h-3"></i> zapook12@gmail.com</a>
+                        <span class="flex items-center gap-2"><i data-lucide="message-circle" class="w-3 h-3 text-cyan-500 opacity-70"></i> LINE ID: tikizz</span>
                     </div>
                 </div>
 
@@ -418,15 +431,15 @@
                 <div class="group flex flex-col items-center text-center md:-translate-y-8">
                     <div class="w-full aspect-[3/4] overflow-hidden mb-8 rounded-sm bg-white/5 relative">
                         <img src="images/palm.jpg" alt="Peeranut Intachai" class="w-full h-full object-cover object-center grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700 ease-in-out scale-100 group-hover:scale-105">
-                        <div class="absolute inset-0 border border-white/10 group-hover:border-orange-500/50 transition-colors duration-500 pointer-events-none"></div>
+                        <div class="absolute inset-0 border border-white/10 group-hover:border-cyan-500/50 transition-colors duration-500 pointer-events-none"></div>
                     </div>
                     <h3 class="text-2xl font-heading text-white mb-1">Peeranut Intachai</h3>
-                    <p class="text-[11px] uppercase tracking-[0.2em] text-white/40 mb-6">พีรณัฐ อินทะชัย (ต้นปาล์ม)</p>
+                    <p class="text-[11px] uppercase tracking-[0.2em] text-cyan-400/80 mb-6">พีรณัฐ อินทะชัย (ต้นปาล์ม)</p>
                     
                     <div class="text-xs text-white/50 font-light space-y-2 flex flex-col items-center">
-                        <a href="tel:0653059895" class="hover:text-orange-400 transition-colors flex items-center gap-2"><i data-lucide="phone" class="w-3 h-3"></i> 065-305-9895</a>
-                        <a href="mailto:peeranat477@gmail.com" class="hover:text-orange-400 transition-colors flex items-center gap-2"><i data-lucide="mail" class="w-3 h-3"></i> peeranat477@gmail.com</a>
-                        <span class="flex items-center gap-2"><i data-lucide="message-circle" class="w-3 h-3 text-green-500 opacity-70"></i> LINE ID: palmmy23258</span>
+                        <a href="tel:0653059895" class="hover:text-cyan-400 transition-colors flex items-center gap-2"><i data-lucide="phone" class="w-3 h-3"></i> 065-305-9895</a>
+                        <a href="mailto:peeranat477@gmail.com" class="hover:text-cyan-400 transition-colors flex items-center gap-2"><i data-lucide="mail" class="w-3 h-3"></i> peeranat477@gmail.com</a>
+                        <span class="flex items-center gap-2"><i data-lucide="message-circle" class="w-3 h-3 text-cyan-500 opacity-70"></i> LINE ID: palmmy23258</span>
                     </div>
                 </div>
 
@@ -434,14 +447,14 @@
                 <div class="group flex flex-col items-center text-center">
                     <div class="w-full aspect-[3/4] overflow-hidden mb-8 rounded-sm bg-white/5 relative">
                         <img src="images/film.jpg" alt="Ratchanon Nualyok" class="w-full h-full object-cover object-center grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700 ease-in-out scale-100 group-hover:scale-105">
-                        <div class="absolute inset-0 border border-white/10 group-hover:border-orange-500/50 transition-colors duration-500 pointer-events-none"></div>
+                        <div class="absolute inset-0 border border-white/10 group-hover:border-cyan-500/50 transition-colors duration-500 pointer-events-none"></div>
                     </div>
                     <h3 class="text-2xl font-heading text-white mb-1">Ratchanon Nualyok</h3>
-                    <p class="text-[11px] uppercase tracking-[0.2em] text-white/40 mb-6">รัชชานนท์ นวลหยวก (ฟิล์ม)</p>
+                    <p class="text-[11px] uppercase tracking-[0.2em] text-cyan-400/80 mb-6">รัชชานนท์ นวลหยวก (ฟิล์ม)</p>
                     
                     <div class="text-xs text-white/50 font-light space-y-2 flex flex-col items-center">
-                        <!-- คุณฟิล์มไม่มีข้อมูลติดต่อเสริม เลยใส่เป็นสถานะไว้เท่ๆ ครับ -->
-                        <span class="flex items-center gap-2 text-white/30"><i data-lucide="shield-check" class="w-3 h-3"></i> Core Team</span>
+                        <a href="tel:0928230854" class="hover:text-cyan-400 transition-colors flex items-center gap-2"><i data-lucide="phone" class="w-3 h-3"></i> 092-823-0854</a>
+                        <span class="flex items-center gap-2"><i data-lucide="message-circle" class="w-3 h-3 text-cyan-500 opacity-70"></i> LINE ID: 0928230854</span>
                     </div>
                 </div>
 
@@ -450,17 +463,16 @@
     </section>
 
     <!-- Footer / Contact -->
-    <footer id="contact" class="pt-32 pb-12 border-t border-white/10 relative z-10 bg-[#050505]">
+    <footer id="contact" class="pt-32 pb-12 border-t border-white/10 relative z-10 bg-[#000000]">
         <div class="container mx-auto px-6 lg:px-12 text-center reveal">
             
-            <h2 class="text-5xl md:text-7xl font-heading font-bold mb-8">Ready to start<span class="text-orange-500">?</span></h2>
+            <h2 class="text-5xl md:text-7xl font-heading font-bold mb-8">Ready to start<span class="text-cyan-400">?</span></h2>
             <p class="text-white/50 mb-12 max-w-lg mx-auto font-light text-[13px] md:text-sm leading-relaxed">
                 ส่งบรีฟงาน หรือ Requirement มาให้เราประเมินราคาได้ทันที <br/>ความลับของคุณคือสิ่งสำคัญที่สุด
             </p>
             
-            <!-- เปลี่ยนลิงก์และแสดง Line OA ใหม่ -->
-            <a href="https://line.me/R/ti/p/@368waguc" target="_blank" class="inline-flex items-center gap-3 bg-white text-black px-10 py-4 rounded-full font-bold hover:bg-orange-500 hover:text-white transition-all duration-300 mb-6 shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:shadow-[0_0_30px_rgba(255,102,0,0.4)]">
-                <i data-lucide="message-circle" class="w-5 h-5 text-green-600 group-hover:text-white"></i>
+            <a href="https://line.me/R/ti/p/@368waguc" target="_blank" class="inline-flex items-center gap-3 bg-white text-black px-10 py-4 rounded-full font-bold hover:bg-cyan-500 hover:text-white transition-all duration-300 mb-6 shadow-[0_0_20px_rgba(0,225,255,0.2)] hover:shadow-[0_0_30px_rgba(0,225,255,0.4)]">
+                <i data-lucide="message-circle" class="w-5 h-5 text-[#06c755] group-hover:text-white"></i>
                 Add Line: @368waguc
             </a>
             <p class="text-white/30 text-xs mb-24 uppercase tracking-widest font-light">Available 24/7</p>
@@ -483,13 +495,11 @@
         
         window.addEventListener('scroll', () => {
             if (window.scrollY > 50) {
-                // เปลี่ยนพื้นหลังเมนูตอนเลื่อนลง
                 navbar.classList.add('scrolled-nav');
                 navbar.classList.remove('pt-8');
                 navbar.classList.add('pt-4');
                 navbar.querySelector('.border-b').classList.replace('border-white/30', 'border-transparent');
             } else {
-                // คืนค่าเดิมตอนอยู่บนสุด
                 navbar.classList.remove('scrolled-nav');
                 navbar.classList.add('pt-8');
                 navbar.classList.remove('pt-4');
@@ -530,16 +540,20 @@
             });
         });
 
-        // --- ลูกเล่นแสงออร่าขยับตามเมาส์ (Interactive Glow) ---
-        const glowElement = document.getElementById('interactive-glow');
+        // --- ลูกเล่นแสงออร่า 3 สี ขยับตามเมาส์แบบพรีเมียม ---
+        const glow1 = document.getElementById('interactive-glow-1'); // Blue
+        const glow2 = document.getElementById('interactive-glow-2'); // Purple
+        const glow3 = document.getElementById('interactive-glow-3'); // Cyan
         
         document.addEventListener('mousemove', (e) => {
             // คำนวณตำแหน่งเมาส์ หาจุดศูนย์กลางของจอ
-            const x = (e.clientX / window.innerWidth - 0.5) * 20; // ขยับซ้ายขวาเล็กน้อย (20px)
-            const y = (e.clientY / window.innerHeight - 0.5) * 20; // ขยับขึ้นลงเล็กน้อย
+            const x = (e.clientX / window.innerWidth - 0.5);
+            const y = (e.clientY / window.innerHeight - 0.5);
             
-            // ขยับแสงไปตามเมาส์แบบนุ่มนวล
-            glowElement.style.transform = `translate(calc(-50% + ${x}px), ${y}px)`;
+            // ให้แสงแต่ละสีขยับด้วยความเร็วไม่เท่ากัน (เกิดมิติความลึก)
+            glow1.style.transform = `translate(${x * 40}px, ${y * 40}px)`;
+            glow2.style.transform = `translate(${x * -60}px, ${y * -60}px)`;
+            glow3.style.transform = `translate(${x * 30}px, ${y * -30}px)`;
         });
 
         // --- ระบบ Scroll Reveal (ให้ไอเทมค่อยๆ โผล่ตอนเลื่อนจอ) ---
